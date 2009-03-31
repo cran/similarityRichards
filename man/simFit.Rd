@@ -1,6 +1,8 @@
 \name{simFit}
 \alias{simFit}
-\title{ Relative backfitted values for one sample in one experiment }
+\alias{simFit-class}
+\title{ Similarity of curves:
+        Relative backfitted values for one sample in one experiment }
 \description{
  Calculates the relative backfitted values for one sample
  in one 'experiment', fitted by Richards curves.
@@ -37,7 +39,7 @@ simFit(Smp = NULL, fitSmp = NULL, Ref = NULL, fitRef = NULL,
   \item{maxlogx}{ a numeric value with the maximum of the independent value. }
   \item{g}{ an optional an optional numeric value, the base of the logarithm. }
   \item{length.out}{ a integer value, the number of points to find
-                     backfitted values for. }
+                     backfitted values of. }
   \item{LogX}{ an optional numeric vector,
               the values of the independent variable. }
   \item{applyFUN2X}{ a function applied to each dataset,

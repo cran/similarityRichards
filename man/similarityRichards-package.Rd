@@ -11,15 +11,15 @@
 \tabular{ll}{
 Package: \tab similarityRichards     \cr
 Type:    \tab Package                \cr
-Version: \tab 0.4                    \cr
-Date:    \tab 2008-03-247             \cr
+Version: \tab 0.4.5                  \cr
+Date:    \tab 2008-09-01             \cr
 License: \tab GPL Version 2 or later \cr
 }
 }
 \author{
 Jens Henrik Badsberg
 
-Maintainer: Jens Henrik Badsberg <march2008spam4richards@badsberg.eu>
+Maintainer: Jens Henrik Badsberg <september2008richards@badsberg.eu>
 }
 % 
 % Emmens CW.:

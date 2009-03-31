@@ -7,12 +7,19 @@ function (list, fits, refName = "Ref", ...)
     if (!all(names(list) == names(fits))) 
         warning("Possible mismatch in 'sub2simFits'")
     result <- NULL
-    index.Ref <- which(names(fits) == refName)
-    fitRef <- fits[index.Ref][[1]]
-    for (i in (1:n)[-index.Ref]) {
-        result <- append(result, list(simFit(list[[i]], fitRef = fitRef, 
-            fit = fits[[i]], ...)))
+    index.Ref.sim <- which(names(fits) == refName)
+    if (is.numeric(refName))
+        index.Ref.sim <- refName
+    if (length(index.Ref.sim) != 1)
+        message("Invalid 'refName' in 'sub2simFits'")
+    else {
+        fitRef <- fits[index.Ref.sim][[1]]
+        for (i in (1:n)[-index.Ref.sim]) {
+            result <- append(result, list(simFit(list[[i]], fitRef = fitRef, 
+                                                 fit = fits[[i]], ...)))
+        }
     }
-    names(result) <- names(list)[-index.Ref]
+    if (length(result) > 0)
+        names(result) <- names(list)[-index.Ref.sim]
     result
 }

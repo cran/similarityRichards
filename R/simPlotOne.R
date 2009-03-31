@@ -1,43 +1,79 @@
 `simPlotOne` <-
-function (fits, name, xt = function(x) -x, ylim = c(min(Z), max(Z)),
+function (fits, name, indep2conc = function(x) x, ylim = c(min(Z), max(Z)), 
     Conf = simConf, main = paste("Backfitted values: ", name), 
-    sub = paste("Above / below / NA: ", paste("", c(length(which(Z > 
-        ylim[2])), length(which(Z < ylim[1])), length(which(is.na(Z)))), 
-        collapse = " /")), xlab = "~ Log(concentration) [Dilution step]", 
-    ylab = "Relative backfitted concentration", ...) 
+    sub = paste("Above / below / NA: ",
+    paste("", c(length(which(Z > ylim[2])), 
+                length(which(Z < ylim[1])), 
+                length(which(is.na(Z)))), collapse = " /")), 
+    xlab = "~ Log(concentration) [Dilution step]", 
+    ylab = "Relative backfitted concentrations", useFitNames = FALSE, 
+    doPlot = TRUE, ...) 
 {
-    Relative <- lapply(fits, function(i) {
+    extract <- function(col) lapply(fits, function(i) {
+        Sample <- NULL
         index.Sample <- which(names(i) == name)
-        Sample <- i[index.Sample][[1]]
-        Sample[, "Relative"]
+        if (length(index.Sample) == 1) {
+            Sample <- i[index.Sample][[1]]
+            Sample[, col]
+        }
+        else NULL
     })
+    x.values <- unique(sort(unlist(extract("x"))))
+    Relative <- extract("Relative")
     lengths <- unlist(lapply(Relative, length))
-    if (min(lengths) == max(lengths)) {
-      Z <- matrix(unlist(Relative), ncol = length(Relative))
-      dimnames(Z) <- list(names(Relative[[1]]), names(Relative))
-    } else {
-      warning("Not equal lenghts: This code is not tested!")
-      .x <- lapply(fits, function(i) {
-          index.Sample <- which(names(i) == name)
-          Sample <- i[index.Sample][[1]]
-          Sample[, "x"]
-      })
-      xv <- unique(sort(unlist(.x)))
-      A <- xv
-      lapply(fits, function(i) {
-                     index.Sample <- which(names(i) == name)
-                     Sample <- i[index.Sample][[1]]
-                     idx <- match(Sample[, "x"], xv)
-                     row <- rep(NA, length(xv))
-                     row[idx] <- Sample[, "Relative"]
-                     A <<- cbind(A, row)
-                   })
-      Z <- A[, -1]
-      dimnames(Z) <- list(xv, names(Relative))
+    if ((min(lengths) == max(lengths)) & 
+        (length(x.values) == max(lengths))) {
+        if (length(Relative) > 1) {
+            Z <- matrix(unlist(Relative), ncol = length(Relative))
+            if (useFitNames) 
+                dimnames(Z) <- list(names(Relative[[1]]), names(Relative))
+            else dimnames(Z) <- list(as.character(x.values), names(Relative))
+        } else {
+            Z <- Relative[[1]]
+            if (!useFitNames) 
+                names(Z) <- as.character(x.values)
+        }
     }
-    suppressWarnings(matplot(xt(as.real(dimnames(Z)[[1]])), Z,
-        ylim = ylim, main = main, sub = sub,
-        xlab = xlab, ylab = ylab, ...))
-    Conf(Z, x = xt(as.real(dimnames(Z)[[1]])), ylim = ylim, ...)
+    else {
+        A <- x.values
+        lapply(fits, function(i) {
+            Sample <- NULL
+            index.Sample <- which(names(i) == name)
+            if (length(index.Sample) == 1) {
+                Sample <- i[index.Sample][[1]]
+                idx <- match(Sample[, "x"], x.values)
+                row <- rep(NA, length(x.values))
+                row[idx] <- Sample[, "Relative"]
+                A <<- cbind(A, row)
+            }
+        })
+        Z <- A[, -1]
+# browser()
+        notNull <- unlist(lapply(Relative, function(x) !is.null(x)))
+        if (is.matrix(Z))
+            if (useFitNames) 
+                dimnames(Z) <- list(names(Relative[[min(which(notNull))]]), 
+                    names(Relative)[notNull])
+            else dimnames(Z) <- list(as.character(x.values), 
+                                     names(Relative)[notNull])
+        else
+            if (useFitNames) 
+                names(Z) <- names(Relative[[min(which(notNull))]])
+            else 
+                names(Z) <- as.character(x.values)
+    }
+    if (doPlot) {
+        if (is.matrix(Z)) {
+            x <- as.real(dimnames(Z)[[1]])
+        } else
+            x <- as.real(names(Z))
+        suppressWarnings(matplot(indep2conc(x), Z, 
+            ylim = ylim, main = main, sub = sub,
+            xlab = xlab, ylab = ylab,  ...))
+        if (is.matrix(Z))
+            Conf(Z, x = indep2conc(x), ylim = ylim, ...)
+        }
+    attr(Z, which = "sampleName") <- name
+    attr(Z, which = "label") <- sub
     Z
 }

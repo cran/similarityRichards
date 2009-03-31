@@ -10,7 +10,7 @@ simPlot(simFits = NULL, ...)
 \arguments{
   \item{simFits}{ a list of list of \code{simFits}, see \link{simFit}. 
                   (The double 'list of' is not a typo!) }
-  \item{\dots}{ additional argument, to \link{matplot} and \link{simConf}. }
+  \item{\dots}{ additional arguments, to \link{matplot} and \link{simConf}. }
 }
 \details{ Backfitted values for Richards curves for several 'samples'
  are plotted, each 'sample' by \link{simPlotOne}, in severel plots. }

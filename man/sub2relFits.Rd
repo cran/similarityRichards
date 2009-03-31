@@ -1,14 +1,14 @@
-\name{sub2simFits}
-\alias{sub2simFits}
-\title{ Similarity of curves:
+\name{sub2relFits}
+\alias{sub2relFits}
+\title{ Relative potency:
         Relative backfitted values from fits of Richards curves
         for one 'experiment' }
 \description{
- Compute relative backfitted values from the data and
+ Compute relative backfitted values (by \link{relFit}) from the data and
  the fits of Richards curves for one 'experiment'.
 }
 \usage{
-sub2simFits(list, fits, refName = "Ref", ...)
+sub2relFits(list, fits, refName = "Ref", ...)
 }
 \arguments{
   \item{list}{ a list of datasets. }
@@ -18,10 +18,11 @@ sub2simFits(list, fits, refName = "Ref", ...)
   \item{\dots}{ additional arguments. }
 }
 \details{
- Compute relative backfitted values from the data and
+ Compute relative backfitted values (by \link{relFit}) from the data and
  the fits of Richards curves for one 'experiment'.
  The argument lists \code{list} and \code{fits} are assumed to match.
 }
+\seealso{ See also \code{\link{relFit}}. }
 \value{ List of matrices with relevant values.}
 \author{ Jens Henrik Badsberg }
 \keyword{ package }
